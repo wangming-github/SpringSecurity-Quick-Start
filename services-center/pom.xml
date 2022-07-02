@@ -25,6 +25,11 @@
     <dependencies>
         <dependency>
             <groupId>com.maizi</groupId>
+            <artifactId>common-auth</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.maizi</groupId>
             <artifactId>common-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
@@ -36,6 +41,11 @@
         <dependency>
             <groupId>com.maizi</groupId>
             <artifactId>common-exception</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.maizi</groupId>
+            <artifactId>common-swagger</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
@@ -83,13 +93,16 @@
 
 
         <!--lombok用来简化实体类：需要安装lombok插件-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <!--gson-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
     </dependencies>
-
 
     <build>
         <resources>
@@ -102,5 +115,4 @@
             </resource>
         </resources>
     </build>
-
 </project>

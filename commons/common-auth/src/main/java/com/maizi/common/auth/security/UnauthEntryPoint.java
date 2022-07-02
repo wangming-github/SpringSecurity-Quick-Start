@@ -1,4 +1,4 @@
-package com.maizi.auth.center.security;
+package com.maizi.common.auth.security;
 
 import com.maizi.common.core.utils.R;
 import com.maizi.common.core.utils.ResponseUtil;
@@ -13,6 +13,7 @@ import java.io.IOException;
 /**
  * @author maizi
  */
+
 public class UnauthEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {

@@ -1,4 +1,4 @@
-package com.maizi.auth.center.entity;
+package com.maizi.common.auth.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,6 +10,7 @@ import java.io.Serializable;
 /**
  * @author maizi
  */
+
 @Data
 @ApiModel(description = "用户实体类")
 public class User implements Serializable {
@@ -32,4 +33,5 @@ public class User implements Serializable {
     private String token;
 
 }
+
 

@@ -1,13 +1,10 @@
-package com.maizi.auth.center.security;
+package com.maizi.common.auth.security;
 
 import com.maizi.common.core.utils.R;
 import com.maizi.common.core.utils.ResponseUtil;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,14 +15,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author maizi
  */
-@Data
-@Slf4j
-@Component
 public class TokenLogoutHandler implements LogoutHandler {
-
     private TokenManager tokenManager;
     private RedisTemplate redisTemplate;
-
 
     public TokenLogoutHandler(TokenManager tokenManager, RedisTemplate redisTemplate) {
         this.tokenManager = tokenManager;
@@ -33,20 +25,17 @@ public class TokenLogoutHandler implements LogoutHandler {
     }
 
     @Override
-    public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
+    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         //1 从header里面获取token
         //2 token不为空，移除token，从redis删除token
-        String token = httpServletRequest.getHeader("token");
-
+        String token = request.getHeader("token");
         if (token != null) {
             //移除
             tokenManager.removeToken(token);
-            //从token中获取用户名
-            String username = tokenManager.getUserInfoByToken(token);
-            //删除redis中的token
+            //从token获取用户名
+            String username = tokenManager.getUserInfoFromToken(token);
             redisTemplate.delete(username);
-            log.info("删除redis中的token:{}", username);
         }
-        ResponseUtil.out(httpServletResponse, R.ok());
+        ResponseUtil.out(response, R.ok());
     }
 }

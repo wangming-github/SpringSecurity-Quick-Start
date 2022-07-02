@@ -1,4 +1,4 @@
-package com.maizi.auth.center.entity;
+package com.maizi.common.auth.entity;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * @author maizi
  */
+
 @Data
 public class SecurityUser implements UserDetails {
 

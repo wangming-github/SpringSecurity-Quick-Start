@@ -1,6 +1,6 @@
-package com.maizi.auth.center.filter;
+package com.maizi.common.auth.filter;
 
-import com.maizi.auth.center.security.TokenManager;
+import com.maizi.common.auth.security.TokenManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,67 +36,44 @@ import java.util.List;
  *
  * @author maizi
  */
+
 public class TokenAuthFilter extends BasicAuthenticationFilter {
 
     private TokenManager tokenManager;
-
     private RedisTemplate redisTemplate;
-
-    /**
-     * 已经包含了AuthenticationManager对象
-     */
-    public TokenAuthFilter(AuthenticationManager authenticationManager, TokenManager tokenManager, RedisTemplate redisTemplate) {
+    public TokenAuthFilter(AuthenticationManager authenticationManager,TokenManager tokenManager,RedisTemplate redisTemplate) {
         super(authenticationManager);
         this.tokenManager = tokenManager;
         this.redisTemplate = redisTemplate;
     }
 
-
-    /**
-     * 重写框架内部的doFilterInternal
-     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-
         //获取当前认证成功用户权限信息
         UsernamePasswordAuthenticationToken authRequest = getAuthentication(request);
-
         //判断如果有权限信息，放到权限上下文中
-        if (authRequest != null) {
+        if(authRequest != null) {
             SecurityContextHolder.getContext().setAuthentication(authRequest);
         }
-        //放行，执行原始流程...
-        chain.doFilter(request, response);
+        chain.doFilter(request,response);
     }
 
-    /**
-     * 获取当前认证成功用户权限信息
-     */
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-
-        //从request的header中获取token
+        //从header获取token
         String token = request.getHeader("token");
-        if (token == null) {
-            return null;
+        if(token != null) {
+            //从token获取用户名
+            String username = tokenManager.getUserInfoFromToken(token);
+            //从redis获取对应权限列表
+            List<String> permissionValueList = (List<String>)redisTemplate.opsForValue().get(username);
+            Collection<GrantedAuthority> authority = new ArrayList<>();
+            for(String permissionValue : permissionValueList) {
+                SimpleGrantedAuthority auth = new SimpleGrantedAuthority(permissionValue);
+                authority.add(auth);
+            }
+            return new UsernamePasswordAuthenticationToken(username,token,authority);
         }
-
-        //从token中获取username
-        String username = tokenManager.getUserInfoByToken(token);
-
-        /*
-         * 从redis中获取权限列表信息，转换为构建UsernamePasswordAuthenticationToken需要的类型
-         */
-
-        //从redis中获取权限列表信息
-        List<String> permissionValueList = (List<String>) redisTemplate.opsForValue().get(username);
-        //权限列表信息 源码Collection<? extends GrantedAuthority> authorities
-        Collection<GrantedAuthority> authority = new ArrayList<>();
-        permissionValueList.forEach(permission -> {
-            SimpleGrantedAuthority auth = new SimpleGrantedAuthority(permission);
-            authority.add(auth);
-        });
-
-        return new UsernamePasswordAuthenticationToken(username, token, authority);
+        return null;
     }
 
 }
