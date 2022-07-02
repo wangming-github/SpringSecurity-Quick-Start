@@ -6,7 +6,6 @@
     <modules>
         <module>registration-center</module>
         <module>services-center</module>
-        <module>auth-center</module>
         <module>commons</module>
     </modules>
 
@@ -100,6 +99,11 @@
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
                 <version>${json.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
             </dependency>
         </dependencies>
     </dependencyManagement>

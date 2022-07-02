@@ -1,4 +1,4 @@
-package com.maizi.common.auth.security;
+package com.maizi.common.auth.pwd.encoder;
 
 import com.maizi.common.core.utils.MD5;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @author maizi
  */
 @Component
-public class DefaultPasswordEncoder implements PasswordEncoder {
+public class Md5PasswordEncoder implements PasswordEncoder {
 
     @Override
     public String encode(CharSequence charSequence) {
@@ -20,6 +20,7 @@ public class DefaultPasswordEncoder implements PasswordEncoder {
 
     @Override
     public boolean matches(CharSequence charSequence, String encodedPassword) {
+
         return encodedPassword.equals(MD5.encrypt(charSequence.toString()));
     }
 }

@@ -2,7 +2,7 @@ package com.maizi.common.auth.config;
 
 import com.maizi.common.auth.filter.TokenAuthFilter;
 import com.maizi.common.auth.filter.TokenLoginFilter;
-import com.maizi.common.auth.security.DefaultPasswordEncoder;
+import com.maizi.common.auth.pwd.encoder.Md5PasswordEncoder;
 import com.maizi.common.auth.security.TokenLogoutHandler;
 import com.maizi.common.auth.security.TokenManager;
 import com.maizi.common.auth.security.UnauthEntryPoint;
@@ -30,11 +30,11 @@ public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private TokenManager tokenManager;
     private RedisTemplate redisTemplate;
-    private DefaultPasswordEncoder defaultPasswordEncoder;
+    private Md5PasswordEncoder defaultPasswordEncoder;
     private UserDetailsService userDetailsService;
 
     @Autowired
-    public TokenWebSecurityConfig(UserDetailsService userDetailsService, DefaultPasswordEncoder defaultPasswordEncoder, TokenManager tokenManager, RedisTemplate redisTemplate) {
+    public TokenWebSecurityConfig(UserDetailsService userDetailsService, Md5PasswordEncoder defaultPasswordEncoder, TokenManager tokenManager, RedisTemplate redisTemplate) {
         this.userDetailsService = userDetailsService;
         this.defaultPasswordEncoder = defaultPasswordEncoder;
         this.tokenManager = tokenManager;
@@ -46,7 +46,11 @@ public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(defaultPasswordEncoder);
+        auth
+                //自定义校验
+                .userDetailsService(userDetailsService)
+                //密码加密算法
+                .passwordEncoder(defaultPasswordEncoder);
     }
 
 
